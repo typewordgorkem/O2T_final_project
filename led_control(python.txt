@@ -1,0 +1,66 @@
+import socket
+import threading
+import board
+import serial
+
+ser = serial.Serial('/dev/serial0', 9600)
+
+
+def handle_client(client_socket):
+    try:
+        while True:
+            command = client_socket.recv(1024).decode("utf-8")
+            if not command:
+                break
+            print(f"received command {command}") 
+            if command.strip() == "all_on":
+                ser.write(b'all_on\n')
+                ser.flush()
+            elif command.strip() == "all_off":
+                ser.write(b'all_off\n')
+                ser.flush()
+            elif command.startswith("display_text:"):
+                text_to_display = command.strip()
+                ser.write(text_to_display.encode() + b'\n')
+                ser.flush()
+            elif command.strip() == "start_animation":
+                ser.write(b'start_animation\n')
+                ser.flush()
+            elif command.strip() == "snake_pause":
+                ser.write(b'snake_pause\n')
+                ser.flush()
+            elif command.strip() == "snake_start":
+                ser.write(b'snake_start\n')
+                ser.flush()
+            elif command.strip() == "snake_up":
+                ser.write(b'snake_up\n')
+                ser.flush()
+            elif command.strip() == "snake_down":
+                ser.write(b'snake_down\n')
+                ser.flush()
+            elif command.strip() == "snake_right":
+                ser.write(b'snake_right\n')
+                ser.flush()
+            elif command.strip() == "snake_left":
+                ser.write(b'snake_left\n')
+                ser.flush()                        
+    except Exception as e:
+        print(f"Error in handle_client: {e}")
+    finally:
+        client_socket.close()
+
+def main():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(("0.0.0.0", 9600))
+    server.listen(5)
+
+    print("listening for connections...")
+    while True:
+        client_socket, addr = server.accept()
+        print(f"Accepted connection from {addr}")
+        client_handler = threading.Thread(target=handle_client, args=(client_socket,))
+        client_handler.start()
+
+
+if _name_ == "_main_":
+	main()

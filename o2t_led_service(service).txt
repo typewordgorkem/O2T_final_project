@@ -1,0 +1,14 @@
+[Unit]
+Description=LED Control Service
+After=network.target
+
+[Service]
+ExecStart=/home/owhiproject/Desktop/wait_for_network_and_run.sh
+Restart=always
+User=pi
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=o2t_led
+
+[Install]
+WantedBy=multi-user.target

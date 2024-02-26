@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Wait for network to be up and have an IP address
+while ! ping -c 1 -W 1 8.8.8.8; do
+    sleep 1
+done
+
+# Run the LED control script
+/usr/bin/python3 /home/owhiproject/Desktop/led_control.py
